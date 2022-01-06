@@ -1,3 +1,9 @@
+# GAME MADE BY "MrHoss" github:https://github.com/MrHoss
+# My first and simple Python project
+# This game is not finished, if you want to modify the game feel free, please share any problem with the code with me.
+
+
+
 import pygame
 import math
 import random
