@@ -1,39 +1,32 @@
-# GAME MADE BY "MrHoss" github:https://github.com/MrHoss
-# My first and simple Python project
-# This game is not finished, if you want to modify the game feel free, please share any problem with the code with me.
-
-
-
 import pygame
 import math
 import random
-import sys
 from random import uniform
 from pygame import mixer
 
 pygame.init()
-
+######################### Change values to fit your screen resolution ##############################
 # screen parameters
-winX = 1024
-winY = 768
+winX = 1920 
+winY = 1080
 window = pygame.display.set_mode((winX, winY),pygame.FULLSCREEN, vsync=60)
 pygame.display.set_caption("SkyRise")
 
 # visual parameters
-background = pygame.image.load('gfx/bg/background4:3.png')
+background = pygame.image.load('gfx/bg/background4_3.png').convert_alpha()
 background = pygame.transform.scale(background, (winX, winY))
-icon = pygame.image.load('Icon.png')
+icon = pygame.image.load('Icon.png').convert_alpha()
 pygame.display.set_icon(icon)
 
 # player parameters
-playerShip1 = pygame.image.load('gfx/ships/ship.png')
-playerShip2 = pygame.image.load('gfx/ships/ship1.png')
+playerShip1 = pygame.image.load('gfx/ships/ship.png').convert_alpha()
+playerShip2 = pygame.image.load('gfx/ships/ship1.png').convert_alpha()
 
 
 # object parameters
-ASTER1 = pygame.image.load('gfx/asteroids/Asteroid.png')
-ASTER2 = pygame.image.load('gfx/asteroids/Asteroid2.png')
-ASTER3 = pygame.image.load('gfx/asteroids/Asteroid3.png')
+ASTER1 = pygame.image.load('gfx/asteroids/Asteroid.png').convert_alpha()
+ASTER2 = pygame.image.load('gfx/asteroids/Asteroid2.png').convert_alpha()
+ASTER3 = pygame.image.load('gfx/asteroids/Asteroid3.png').convert_alpha()
 objectImg = []
 objectX = []
 objectY = []
@@ -84,19 +77,21 @@ def paused():
 
 
 def Startscreen():
-    StartLogo = pygame.image.load('Logo.png')
+    StartLogo = pygame.image.load('Logo.png').convert_alpha()
     StartLogo = pygame.transform.scale(StartLogo, (int(winX / 2), int(winY / 2)))
+    Continue = font.render("Press <SPACEBAR> to continue", True, (255, 255, 255))
     Start = True
     while Start:
         pygame.time.delay(50)
         window.fill((0, 0, 0))
         window.blit(background, (0, 0))
         window.blit(StartLogo, (winX/2-250, winY/2-300))
+        window.blit(Continue,(winX/2-300,winY/2+100))
 
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
-                sys.exit()
+                quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     ShipSelection()
@@ -107,10 +102,13 @@ def Startscreen():
 
 def ShipSelection():
     global playerShip
+    global keyfont
     Select = True
+    keyfont = pygame.font.SysFont('comicsans', 20, True)
+    keytext = keyfont.render("<SPACEBAR>:Confirm   <ESC>:Return   <Alt+F4>:Close game", True, (255, 255, 255))
     mouse_over = (170, 170, 170)
     mouse_out = (100, 100, 100)
-    selectedc = (120, 120, 120)
+    selectedc = (110, 110, 110)
     bposX = 100
     bposY = 100
     bsizeX = 144
@@ -122,6 +120,7 @@ def ShipSelection():
         pygame.time.delay(50)
         window.fill((0, 0, 0))
         window.blit(background, (0, 0))
+        window.blit(keytext, (20, winY-30))
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -144,7 +143,6 @@ def ShipSelection():
                     selected2 = True
                     selected1 = False
 
-
         if selected1:
             pygame.draw.rect(window, selectedc, [bposX, bposY, bsizeX, bsizeY])
         elif bposX <= mouse[0] <= bposX + bsizeX and bposY <= mouse[1] <= bposY + bsizeY:
@@ -161,9 +159,7 @@ def ShipSelection():
         window.blit(playerShip1, (bposX , bposY))
         window.blit(playerShip2, (bposX+180, bposY))
 
-
         pygame.display.update()
-
 
 def GamingScreen():
 
@@ -172,7 +168,7 @@ def GamingScreen():
     global textlife
     mixer.music.load("sfx/background.wav")
     mixer.music.play(-1)
-    HUD = pygame.image.load('gfx/HUD.png')
+    HUD = pygame.image.load('gfx/HUD.png').convert_alpha()
     playerX = winX / 2 - 50
     playerY = winY / 2 + 150
     speed = 10
@@ -193,8 +189,8 @@ def GamingScreen():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                GameoverScreen()
+                Run=False
 
         keybind = pygame.key.get_pressed()
 
@@ -258,12 +254,15 @@ def GamingScreen():
 
 def GameoverScreen():
     GOtext = GOfont.render("GAME OVER", True, (255, 255, 255))
+    keytext = keyfont.render("<SPACEBAR>:Ship Selection   <ESC>:Exit game", True, (255, 255, 255))
+    credittext = keyfont.render("Game made By MrHoss", True, (255, 255, 255))
     GOscreen = True
     while GOscreen :
         pygame.time.delay(50)
         window.fill((0,0,0))
         window.blit(background,(0,0))
-
+        window.blit(keytext, (20, winY - 30))
+        window.blit(credittext, (winX-250,winY-30))
         window.blit(text, (winX/2-50,winY/2-100))
         window.blit(textlvl, (winX/2-50,winY/2-135))
         window.blit(GOtext, (winX / 2 - 200, winY / 2 - 200))
@@ -282,7 +281,6 @@ def GameoverScreen():
 
         for i in range(maxObject_display):
 
-
             if (objectY[i] >= winY+200):
                 objectY[i] = uniform(-800, -1000)
                 objectX[i] = uniform(0, winX)
@@ -293,6 +291,6 @@ def GameoverScreen():
         pygame.display.update()
 
 while True:
-    font = pygame.font.SysFont('freesans', 40, True)
-    GOfont = pygame.font.SysFont('freesans', 64, True)
+    font = pygame.font.SysFont('comicsans', 40, True)
+    GOfont = pygame.font.SysFont('comicsans', 64, True)
     Startscreen()
