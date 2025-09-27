@@ -14,8 +14,11 @@ FPS = 60
 MAX_OBJECTS = 6
 COLLISION_RADIUS = 80     # Ajuste conforme o tamanho dos sprites
 RESOURCE_DIR = os.path.dirname(os.path.abspath(__file__))
-info = pygame.display.Info()
-WIN_X, WIN_Y = info.current_w, info.current_h
+try:
+    info = pygame.display.Info()
+    WIN_X, WIN_Y = info.current_w, info.current_h
+except pygame.error:
+    WIN_X, WIN_Y = 1280, 720  # fallback
 
 # Utility: safe resource loader
 def load_image(rel_path, fallback_color=(255,0,255), scale=None):
